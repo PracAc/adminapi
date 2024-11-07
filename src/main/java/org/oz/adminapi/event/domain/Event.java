@@ -1,6 +1,8 @@
 package org.oz.adminapi.event.domain;
 import jakarta.persistence.*;
 import lombok.*;
+import org.oz.adminapi.store.domain.Store;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +19,13 @@ public class Event {
     @Column(name = "event_no")
     private Long eventNo;
 
+    //이거 조인 컬럼으로 해야함
     @Column(name = "maker_biz_no", nullable = false)
     private String makerBizNo;
 
-    @Column(name = "store_no", nullable = false)
-    private Long storeNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no", referencedColumnName = "store_no")
+    private Store store;
 
     @Column(name = "event_start")
     private LocalDateTime eventStart;
