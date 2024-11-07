@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tbl_areacode")
+@Table(name = "admin_areacode")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,6 @@ public class AreaCode {
 
     @Builder.Default
     private Boolean delFlag = Boolean.FALSE;
-
     private LocalDateTime regDate;
     private LocalDateTime modDate;
     private String creator;
