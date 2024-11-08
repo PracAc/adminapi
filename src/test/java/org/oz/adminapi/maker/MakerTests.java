@@ -1,9 +1,13 @@
-package org.oz.adminapi.maker.repository;
+package org.oz.adminapi.maker;
 
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.oz.adminapi.common.domain.AttachFile;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
+import org.oz.adminapi.maker.repository.MakerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
@@ -25,6 +29,12 @@ public class MakerTests {
     @Commit
     public void testDummies(){
 
+        List<String> attachFiles = new ArrayList<>();
+        attachFiles.add("aaa.jpg");
+        attachFiles.add("vvv.jpg");
+        attachFiles.add("ccc.jpg");
+
+
         for (int i = 1; i <= 150; i++) {
             MakerEntity maker = MakerEntity.builder()
                     .makerBizNo( i + "23-45-67890")
@@ -34,13 +44,33 @@ public class MakerTests {
                     .makerPostnum("47240")
                     .makerAddr("addr" + i)
                     .makerAddrDetail("addr detail" + i)
-                    .makerStatus(0)
+                    .build();
+
+            maker.updateAttachFiles(attachFiles);
+            makerRepository.save(maker);
+            log.info(maker.toString());
+        }//end for
+    }
+    @Test
+    @Transactional
+    @Commit
+    public void testFileDummies(){
+
+        for (int i = 1; i <= 150; i++) {
+            MakerEntity maker = MakerEntity.builder()
+                    .makerBizNo( i + "23-45-67890")
+                    .makerName("choi" + i)
+                    .makerEmail("jiho"+ i +"@gmail.com")
+                    .makerPhone("010-1234-5678")
+                    .makerPostnum("47240")
+                    .makerAddr("addr" + i)
+                    .makerAddrDetail("addr detail" + i)
                     .build();
             makerRepository.save(maker);
             log.info(maker.toString());
         }//end for
-
     }
+
 
     @Test
     public void readOne() {
@@ -59,17 +89,25 @@ public class MakerTests {
 
         MakerModifyDTO modifyDTO = MakerModifyDTO.builder()
                 .makerBizNo("123-45-67890")
-                .makerName("Kim1")
-                .makerEmail("kim1@gmail.com")
-                .makerPhone("010-4567-8901")
+                .makerStatus(1)
                 .build();
 
-        Optional<MakerEntity> optionalMakerEntity = makerRepository.findWithFilesByMakerBizNo(modifyDTO.getMakerBizNo());
+        int Status = modifyDTO.getMakerStatus();
+        BasicStatus newStatus = BasicStatus.PENDING;
+        if (Status == 1) {
+            newStatus = BasicStatus.ACCEPTED;
+        }
+        if (Status == 2) {
+            newStatus = BasicStatus.REJECTED;
+        }
+
+        log.info(modifyDTO);
+        Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(modifyDTO.getMakerBizNo());
 
         MakerEntity updateMakerEntity = optionalMakerEntity.get();
-        updateMakerEntity.changeName(modifyDTO.getMakerName());
-        updateMakerEntity.changeEmail(modifyDTO.getMakerEmail());
-        updateMakerEntity.changePhone(modifyDTO.getMakerPhone());
+        updateMakerEntity.changeStatus(newStatus);
+        log.info(updateMakerEntity);
+
     }
 
 

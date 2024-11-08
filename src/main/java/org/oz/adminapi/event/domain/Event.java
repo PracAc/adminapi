@@ -1,6 +1,9 @@
 package org.oz.adminapi.event.domain;
 import jakarta.persistence.*;
 import lombok.*;
+import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Event {
+public class Event extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_no")
@@ -29,25 +32,15 @@ public class Event {
     @Column(name = "event_end")
     private LocalDateTime eventEnd;
 
-    @Column(name = "event_status")
-    private Integer eventStatus;
-
-    @Column(name = "del_flag")
-    private Boolean delFlag;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "event_status", columnDefinition = "INT DEFAULT 0")
+    private EventStatus eventStatus = EventStatus.PENDING;
 
     @Column(name = "spacerent_status")
     private Boolean spaceRentStatus;
 
-    @Column(name = "reg_date")
-    private LocalDateTime regDate;
-
-    @Column(name = "mod_date")
-    private LocalDateTime modDate;
-
-    @Column(name = "creator")
-    private String creator;
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "admin_event_history", joinColumns = @JoinColumn(name = "event_no"))
     private Set<EventHistory> eventHistories = new HashSet<>();
+
 }

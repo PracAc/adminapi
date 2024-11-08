@@ -40,7 +40,7 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
                         maker.makerBizNo,
                         maker.makerName,
                         maker.makerStatus,
-                        maker.lastModifiedDate
+                        maker.modDate
                 )
         );
 

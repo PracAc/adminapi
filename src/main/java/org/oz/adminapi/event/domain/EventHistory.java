@@ -2,31 +2,23 @@ package org.oz.adminapi.event.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
+
 import java.time.LocalDateTime;
 
 @Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventHistory {
+public class EventHistory extends BasicEntity {
 
-    @Column(name = "event_status")
-    private Integer eventStatus;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "approval_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus approvalStatus = BasicStatus.PENDING;
 
     @Column(name = "maker_spacerent")
     private Boolean makerSpaceRent;
-
-    @Column(name = "del_flag")
-    private Boolean delFlag;
-
-    @Column(name = "reg_date")
-    private LocalDateTime regDate;
-
-    @Column(name = "mod_date")
-    private LocalDateTime modDate;
-
-    @Column(name = "creator")
-    private String creator;
 
     @Column(name = "reject_reason")
     private String rejectReason;

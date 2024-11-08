@@ -14,5 +14,4 @@ public class ProductModifyDTO {
     private Long productNo;
 
     private int productStatus;
-
 }

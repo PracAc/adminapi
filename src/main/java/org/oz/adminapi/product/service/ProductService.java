@@ -62,14 +62,14 @@ public class ProductService {
                 .productNo(product.getProductNo())
                 .productName(product.getProductName())
                 .productDescription(product.getProductDescription())
-                .productStatus(product.getProductStatus())
+//                .productStatus(product.getProductStatus())
                 .makerName(product.getMaker().getMakerName())
                 .categoriesNo(categoriesNo)
                 .categoriesName(categoriesName)
                 .attachFileNames(attachFileNames)
-                .createDate(product.getCreateDate())
-                .lastModifiedDate(product.getLastModifiedDate())
-                .creatorName(product.getCreatorName())
+                .createDate(product.getRegDate())
+                .lastModifiedDate(product.getModDate())
+                .creatorName(product.getCreator())
                 .build();
         return readDTO;
     }
@@ -82,7 +82,7 @@ public class ProductService {
         }
 
         ProductEntity updateProductEntity = optionalProductEntity.get();
-        updateProductEntity.changeStatus(modifyDTO.getProductStatus());
+//        updateProductEntity(modifyDTO.getProductStatus());
 
 
         return updateProductEntity.getProductNo();

@@ -2,6 +2,7 @@ package org.oz.adminapi.area.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.oz.adminapi.common.domain.BasicEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DistrictCode {
+public class DistrictCode extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "district_no")
@@ -22,9 +23,4 @@ public class DistrictCode {
     private AreaCode areaCode;
 
     private String districtName;
-    @Builder.Default
-    private Boolean delFlag = Boolean.FALSE;
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
-    private String creator;
 }

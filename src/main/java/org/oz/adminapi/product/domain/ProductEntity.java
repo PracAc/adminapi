@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.maker.domain.MakerEntity;
 
 import java.util.HashSet;
@@ -31,8 +32,10 @@ public class ProductEntity extends BasicEntity {
     private String productDescription;
 
     // 상품 승인 상태
-    @Column(name = "product_status")
-    private int productStatus;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "product_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus productStatus = BasicStatus.PENDING;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maker_biz_no", nullable = false)
@@ -47,15 +50,12 @@ public class ProductEntity extends BasicEntity {
     //제작자 상품 이미지
     private Set<AttachFile> attachFiles = new HashSet<>();
 
-    public void addFile(String filename){
-        attachFiles.add(new AttachFile(attachFiles.size(), filename));
-    }
-
     public void clearFiles(){
         attachFiles.clear();
     }
-
-    public void changeStatus(int newStatus){
-        this.productStatus = newStatus;
+    public void updateAttachFiles(java.util.List<String> newFileNames) {
+        this.attachFiles.clear();
+        newFileNames.forEach(name -> attachFiles.add(new AttachFile(attachFiles.size(), name)));
     }
+
 }

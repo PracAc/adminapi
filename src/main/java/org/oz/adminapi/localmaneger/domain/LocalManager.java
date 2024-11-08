@@ -3,6 +3,7 @@ package org.oz.adminapi.localmaneger.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.area.domain.AreaCode;
+import org.oz.adminapi.common.domain.BasicEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LocalManager {
+public class LocalManager extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "manager_no")
@@ -22,13 +23,6 @@ public class LocalManager {
 
     @Column(name = "manager_contact")
     private String managerContact;
-
-    @Builder.Default
-    private Boolean delFlag = Boolean.FALSE;
-
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
-    private String creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_name", referencedColumnName = "area_name")

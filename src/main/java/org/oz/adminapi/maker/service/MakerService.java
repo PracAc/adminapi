@@ -46,10 +46,6 @@ public class MakerService {
                 .makerAddr(makerEntity.getMakerAddr())
                 .makerAddrDetail(makerEntity.getMakerAddrDetail())
                 .attachFileNames(attachFileNames)
-                .createDate(makerEntity.getCreateDate())
-                .lastModifiedDate(makerEntity.getLastModifiedDate())
-                .delFlag(makerEntity.getDelFlag())
-                .creatorName(makerEntity.getCreatorName())
                 .build();
 
         return makerReadDTO;
@@ -60,14 +56,11 @@ public class MakerService {
 
         Optional<MakerEntity> optionalMakerEntity = makerRepository.findWithFilesByMakerBizNo(modifyDTO.getMakerBizNo());
         if (optionalMakerEntity.isEmpty()) {
-            throw new RuntimeException("ㄴㄴㄴㄴㄴㄴㄴ");
+            throw new RuntimeException("ssssssssssssssssss");
         }
 
         MakerEntity updateMakerEntity = optionalMakerEntity.get();
-        updateMakerEntity.changeName(modifyDTO.getMakerName());
-        updateMakerEntity.changeEmail(modifyDTO.getMakerEmail());
-        updateMakerEntity.changePhone(modifyDTO.getMakerPhone());
-        updateMakerEntity.changeStatus(modifyDTO.getMakerStatus());
+//        updateMakerEntity.changeStatus(modifyDTO.getMakerStatus());
 
         return updateMakerEntity.getMakerBizNo();
     }

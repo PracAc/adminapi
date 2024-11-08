@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class MakerEntity extends BasicEntity {
     @Column(name = "maker_biz_no", nullable = false)
     private String makerBizNo;
 
-    //제작자 정보 부분
+    //제작자 정보
     @Column(name = "maker_name")
     private String makerName;
     @Column(name = "maker_email")
@@ -39,8 +40,9 @@ public class MakerEntity extends BasicEntity {
     private String makerAddrDetail;
 
     //제작자 승인 상태
-    @Column(name = "maker_status")
-    private int makerStatus;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "maker_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus makerStatus = BasicStatus.PENDING;
 
     @ElementCollection
     @Builder.Default
@@ -51,9 +53,16 @@ public class MakerEntity extends BasicEntity {
     //제작자 포트폴리오 파일
     private Set<AttachFile> attachFiles = new HashSet<>();
 
+    public void clearFiles(){
+        attachFiles.clear();
+    }
     public void updateAttachFiles(java.util.List<String> newFileNames) {
         this.attachFiles.clear();
         newFileNames.forEach(name -> attachFiles.add(new AttachFile(attachFiles.size(), name)));
+    }
+
+    public void changeStatus(BasicStatus newStatus){
+          this.makerStatus = newStatus;
     }
 
     public void changeName(String newName){
@@ -65,5 +74,4 @@ public class MakerEntity extends BasicEntity {
     public void changePhone(String newPhone){
         this.makerPhone = newPhone;
     }
-    public void changeStatus(int newStatus){ this.makerStatus = newStatus; }
 }
