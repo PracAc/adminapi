@@ -3,11 +3,8 @@ package org.oz.adminapi.store.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.BasicEntity;
-import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.localmaneger.domain.LocalManager;
 import org.oz.adminapi.area.domain.AreaCode;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -15,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Table(name = "admin_store")
-public class Store extends BasicEntity {
+public class StoreEntity extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
