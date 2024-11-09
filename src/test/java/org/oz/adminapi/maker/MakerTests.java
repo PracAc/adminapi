@@ -113,4 +113,18 @@ public class MakerTests {
 
         log.info(updateMakerEntity);
     }
+
+    @Test
+    @Transactional
+    @Commit
+    public void testDelFlag(){
+        String makerBizNo = "123-45-67890";
+
+        Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(makerBizNo);
+        MakerEntity makerEntity = optionalMakerEntity.get();
+
+        makerEntity.changeDelFlag(false);
+
+        log.info(makerEntity);
+    }
 }

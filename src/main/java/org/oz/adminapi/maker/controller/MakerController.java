@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Repeatable;
+
 @RestController
 @RequestMapping("/api/maker")
 @RequiredArgsConstructor
@@ -36,7 +38,12 @@ public class MakerController {
     @PutMapping("/modify")
     public ResponseEntity<String> updateMaker(
             @RequestBody MakerModifyDTO updateDTO) {
-        return ResponseEntity.ok(makerService.modifyMaker(updateDTO));
+        return ResponseEntity.ok(makerService.modifyStatus(updateDTO));
+    }
+
+    @PutMapping("/delete/{makerBizNo}")
+    public ResponseEntity<String> delMaker(@PathVariable(name = "makerBizNo")String makerBizNo){
+        return ResponseEntity.ok(makerService.delMaker(makerBizNo));
     }
 
 

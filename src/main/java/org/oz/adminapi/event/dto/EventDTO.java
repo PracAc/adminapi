@@ -3,7 +3,9 @@ package org.oz.adminapi.event.dto;
 import lombok.*;
 import org.oz.adminapi.event.domain.EventStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -12,12 +14,12 @@ import java.time.LocalDateTime;
 public class EventDTO {
     private String makerBizNo;
     private Long storeNo;
-    private LocalDateTime eventStart;
-    private LocalDateTime eventEnd;
+    private LocalDate eventStart;
+    private LocalDate eventEnd;
     private EventStatus eventStatus;
     private Boolean spaceRentStatus;
 
-    public EventDTO(String makerBizNo, LocalDateTime eventStart, LocalDateTime eventEnd, EventStatus eventStatus, Boolean spaceRentStatus) {
+    public EventDTO(String makerBizNo, LocalDate eventStart, LocalDate eventEnd, EventStatus eventStatus, Boolean spaceRentStatus) {
         this.makerBizNo = makerBizNo;
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
