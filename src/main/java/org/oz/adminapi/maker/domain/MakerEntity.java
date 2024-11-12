@@ -41,6 +41,7 @@ public class MakerEntity extends BasicEntity {
 
     //제작자 승인 상태
     @Enumerated(EnumType.ORDINAL)
+    @Builder.Default
     @Column(name = "maker_status", columnDefinition = "INT DEFAULT 0")
     private BasicStatus makerStatus = BasicStatus.PENDING;
 
@@ -61,17 +62,13 @@ public class MakerEntity extends BasicEntity {
         newFileNames.forEach(name -> attachFiles.add(new AttachFile(attachFiles.size(), name)));
     }
 
-    public void changeStatus(BasicStatus newStatus){
-          this.makerStatus = newStatus;
+    public void changeStatusPending(){
+        this.makerStatus = BasicStatus.PENDING;
     }
-
-    public void changeName(String newName){
-        this.makerName = newName;
+    public void changeStatusAccepted() {
+        this.makerStatus = BasicStatus.ACCEPTED;
     }
-    public void changeEmail(String newEmail){
-        this.makerEmail = newEmail;
-    }
-    public void changePhone(String newPhone){
-        this.makerPhone = newPhone;
+    public void changeStatusRejected() {
+        this.makerStatus = BasicStatus.REJECTED;
     }
 }

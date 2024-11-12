@@ -1,36 +1,42 @@
 package org.oz.adminapi.event.domain;
 import jakarta.persistence.*;
 import lombok.*;
+import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.domain.BasicEntity;
-import org.oz.adminapi.common.domain.BasicStatus;
+import org.oz.adminapi.maker.domain.MakerEntity;
+import org.oz.adminapi.store.domain.StoreEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 @Entity
 @Table(name = "admin_event")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Event extends BasicEntity {
+public class EventEntity extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_no")
     private Long eventNo;
 
-    @Column(name = "maker_biz_no", nullable = false)
-    private String makerBizNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maker_biz_no", nullable = false)
+    private MakerEntity maker;
 
-    @Column(name = "store_no", nullable = false)
-    private Long storeNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no", nullable = false)
+    private StoreEntity storeNo;
 
     @Column(name = "event_start")
-    private LocalDateTime eventStart;
+    private LocalDate eventStart;
 
     @Column(name = "event_end")
-    private LocalDateTime eventEnd;
+    private LocalDate eventEnd;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "event_status", columnDefinition = "INT DEFAULT 0")
@@ -41,6 +47,9 @@ public class Event extends BasicEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "admin_event_history", joinColumns = @JoinColumn(name = "event_no"))
-    private Set<EventHistory> eventHistories = new HashSet<>();
+    private Set<EventHistoryEntity> eventHistoryEntities = new HashSet<>();
 
+    public void initHistory(Boolean spaceRentStatus){
+        this.eventHistoryEntities.add(new EventHistoryEntity());
+    }
 }

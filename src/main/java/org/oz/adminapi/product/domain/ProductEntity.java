@@ -33,6 +33,7 @@ public class ProductEntity extends BasicEntity {
 
     // 상품 승인 상태
     @Enumerated(EnumType.ORDINAL)
+    @Builder.Default
     @Column(name = "product_status", columnDefinition = "INT DEFAULT 0")
     private BasicStatus productStatus = BasicStatus.PENDING;
 

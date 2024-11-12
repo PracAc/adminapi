@@ -25,16 +25,13 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
         Pageable pageable = PageRequest.of(
                 pageRequestDTO.getPage()-1,
                 pageRequestDTO.getSize(),
-                Sort.by("lastModifiedDate").descending());
+                Sort.by("modDate").descending());
 
         QMakerEntity maker = QMakerEntity.makerEntity;
 
         JPQLQuery<MakerEntity> query = from(maker);
 
-        query.groupBy(maker);
-
         this.getQuerydsl().applyPagination(pageable, query);
-
         JPQLQuery<MakerListDTO> dtojpqlQuery = query.select(
                 Projections.bean(MakerListDTO.class,
                         maker.makerBizNo,

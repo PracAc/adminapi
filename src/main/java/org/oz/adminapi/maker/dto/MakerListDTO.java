@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.oz.adminapi.common.domain.BasicStatus;
 
 import java.time.LocalDateTime;
 
@@ -17,8 +18,8 @@ public class MakerListDTO {
 
     private String makerName;
 
-    private int makerStatus;
+    private BasicStatus makerStatus;
 
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime modDate;
 
 }

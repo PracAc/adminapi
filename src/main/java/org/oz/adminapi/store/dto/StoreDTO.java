@@ -26,14 +26,6 @@ public class StoreDTO {
     private LocalDateTime modDate;
     private String creator;
     private LocalManagerDTO localManager;
-//
-//    // List 조회용 생성자
-//    public StoreDTO(String managerName, String storeName, String storeContact, Boolean isRentAvailable) {
-//        this.managerName = managerName;
-//        this.storeName = storeName;
-//        this.storeContact = storeContact;
-//        this.isRentAvailable = isRentAvailable;
-//    }
 
     // Read 조회용 생성자
     public StoreDTO(String managerName, String storeName, String storeContact, String storeLatitude, String storeLongitude, Boolean isRentAvailable) {

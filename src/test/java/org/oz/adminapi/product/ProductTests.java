@@ -2,6 +2,7 @@ package org.oz.adminapi.product;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.maker.repository.MakerRepository;
 import org.oz.adminapi.product.domain.CategoryEntity;
@@ -59,26 +60,6 @@ public class ProductTests {
     @Test
     @Transactional
     @Commit
-    // 상품 더미데이터
-    public void dummiesProduct() {
-        for (int i = 1; i <= 150; i++) {
-            String makerBizNo = i + "123-45-67890";
-
-            Optional<MakerEntity> maker = makerRepository.findById(makerBizNo);
-            if (maker.isPresent()) {
-                ProductEntity product = ProductEntity.builder()
-                        .productNo((long) i)
-                        .productName("Product " + i)
-                        .productDescription("Description for Product " + i)
-                        .maker(maker.get())
-                        .build();
-                productRepository.save(product);
-            }
-        }
-    }
-    @Test
-    @Transactional
-    @Commit
     // 상품 파일 더미데이터
     public void dummiesProductFiles() {
         String makerBizNo = "123-45-67890";
@@ -97,6 +78,7 @@ public class ProductTests {
                         .productName("Product " + i)
                         .productDescription("Description for Product " + i)
                         .maker(maker.get())
+                        .productStatus(BasicStatus.PENDING)
                         .build();
                 product.updateAttachFiles(attachFiles);
                 productRepository.save(product);
@@ -180,31 +162,5 @@ public class ProductTests {
         log.info("=====================================");
         log.info(product);
         log.info(categoryEntityList);
-    }
-
-    @Test
-    @Transactional
-    @Commit
-    public void readProduct() {
-//        Long productNo = 2L;
-//        Optional<ProductEntity> result = productRepository.findWithFilesByProductNo(productNo);
-//        ProductEntity entity = result.get();
-//
-//        List<String> attachFileNames = entity.getAttachFiles().stream()
-//                .map(file -> file.getFileName())
-//                .toList();
-//
-//        ProductReadDTO productReadDTO = ProductReadDTO.builder()
-//                .productNo(productNo)
-//                .productName(entity.getProductName())
-//                .productDescription(entity.getProductDescription())
-//                .productStatus(entity.getProductStatus())
-//                .attachFileNames(attachFileNames)
-//                .makerName(entity.getMaker().getMakerName())
-//                .createDate(entity.getCreateDate())
-//                .lastModifiedDate(entity.getLastModifiedDate())
-//                .build();
-//
-//        log.info(productReadDTO.toString());
     }
 }

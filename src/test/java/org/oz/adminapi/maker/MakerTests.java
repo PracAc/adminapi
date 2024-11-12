@@ -27,7 +27,7 @@ public class MakerTests {
     @Test
     @Transactional
     @Commit
-    public void testDummies(){
+    public void testFileDummies(){
 
         List<String> attachFiles = new ArrayList<>();
         attachFiles.add("aaa.jpg");
@@ -44,6 +44,7 @@ public class MakerTests {
                     .makerPostnum("47240")
                     .makerAddr("addr" + i)
                     .makerAddrDetail("addr detail" + i)
+                    .makerStatus(BasicStatus.PENDING)
                     .build();
 
             maker.updateAttachFiles(attachFiles);
@@ -54,7 +55,7 @@ public class MakerTests {
     @Test
     @Transactional
     @Commit
-    public void testFileDummies(){
+    public void testDummies(){
 
         for (int i = 1; i <= 150; i++) {
             MakerEntity maker = MakerEntity.builder()
@@ -65,6 +66,7 @@ public class MakerTests {
                     .makerPostnum("47240")
                     .makerAddr("addr" + i)
                     .makerAddrDetail("addr detail" + i)
+                    .makerStatus(BasicStatus.PENDING)
                     .build();
             makerRepository.save(maker);
             log.info(maker.toString());
@@ -92,23 +94,37 @@ public class MakerTests {
                 .makerStatus(1)
                 .build();
 
-        int Status = modifyDTO.getMakerStatus();
-        BasicStatus newStatus = BasicStatus.PENDING;
-        if (Status == 1) {
-            newStatus = BasicStatus.ACCEPTED;
-        }
-        if (Status == 2) {
-            newStatus = BasicStatus.REJECTED;
-        }
+        int newStatus = modifyDTO.getMakerStatus();
 
         log.info(modifyDTO);
+
         Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(modifyDTO.getMakerBizNo());
 
         MakerEntity updateMakerEntity = optionalMakerEntity.get();
-        updateMakerEntity.changeStatus(newStatus);
-        log.info(updateMakerEntity);
 
+        if (newStatus == 1){
+            log.info("ACCEPTED");
+            updateMakerEntity.changeStatusAccepted();
+        }
+        if (newStatus == 2){
+            log.info("REJECTED");
+            updateMakerEntity.changeStatusRejected();
+        }
+
+        log.info(updateMakerEntity);
     }
 
+    @Test
+    @Transactional
+    @Commit
+    public void testDelFlag(){
+        String makerBizNo = "123-45-67890";
 
+        Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(makerBizNo);
+        MakerEntity makerEntity = optionalMakerEntity.get();
+
+        makerEntity.changeDelFlag(false);
+
+        log.info(makerEntity);
+    }
 }
