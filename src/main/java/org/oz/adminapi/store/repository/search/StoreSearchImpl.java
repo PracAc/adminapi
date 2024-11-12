@@ -5,8 +5,8 @@ import com.querydsl.jpa.JPQLQuery;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.localmaneger.domain.QLocalManager;
-import org.oz.adminapi.store.domain.QStore;
-import org.oz.adminapi.store.domain.Store;
+import org.oz.adminapi.store.domain.QStoreEntity;
+import org.oz.adminapi.store.domain.StoreEntity;
 import org.oz.adminapi.store.dto.StoreDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class StoreSearchImpl extends QuerydslRepositorySupport implements StoreSearch {
 
     public StoreSearchImpl() {
-        super(Store.class);
+        super(StoreEntity.class);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class StoreSearchImpl extends QuerydslRepositorySupport implements StoreS
                 Sort.by("storeNo").descending());
 
         // QueryDSL의 QLocalManager 사용
-        QStore store = QStore.store;
+        QStoreEntity store = QStoreEntity.storeEntity;
         QLocalManager localManager = QLocalManager.localManager;
 
         // 기본 JPQL 쿼리
-        JPQLQuery<Store> query = from(store);
+        JPQLQuery<StoreEntity> query = from(store);
 
         // Pagination 적용
         this.getQuerydsl().applyPagination(pageable, query);

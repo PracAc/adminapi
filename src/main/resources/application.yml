@@ -3,9 +3,9 @@ spring:
     name: adminapi
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://10.10.10.228:13306/locale24admin
-    username: root
-    password: 12345678
+    url: jdbc:mariadb://10.10.10.31:13306/localeadmin
+    username: localeadmin
+    password: localeadmin
 
     hikari:
       minimum-idle: 2

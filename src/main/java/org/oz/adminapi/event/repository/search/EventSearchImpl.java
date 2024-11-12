@@ -4,10 +4,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
-import org.oz.adminapi.event.domain.Event;
+import org.oz.adminapi.event.domain.EventEntity;
 
-import org.oz.adminapi.event.domain.QEvent;
-import org.oz.adminapi.event.domain.QEventHistory;
+import org.oz.adminapi.event.domain.QEventEntity;
+import org.oz.adminapi.event.domain.QEventHistoryEntity;
 import org.oz.adminapi.event.dto.EventDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class EventSearchImpl extends QuerydslRepositorySupport implements EventSearch {
 
     public EventSearchImpl() {
-        super(Event.class);
+        super(EventEntity.class);
     }
 
 
@@ -33,18 +33,18 @@ public class EventSearchImpl extends QuerydslRepositorySupport implements EventS
                 Sort.by("eventNo").descending());
 
         // QueryDSL의 QLocalManager 사용
-        QEvent event = QEvent.event;
-        QEventHistory eventHistory = QEventHistory.eventHistory;
+        QEventEntity event = QEventEntity.eventEntity;
+        QEventHistoryEntity eventHistory = QEventHistoryEntity.eventHistoryEntity;
 
         // 기본 JPQL 쿼리
-        JPQLQuery<Event> query = from(event);
+        JPQLQuery<EventEntity> query = from(event);
 
         // Pagination 적용
         this.getQuerydsl().applyPagination(pageable, query);
 
         JPQLQuery<EventDTO> dtoJPQLQuery = query
                 .select(Projections.fields(EventDTO.class,
-                        event.makerBizNo,
+                        event.maker.makerBizNo,
                         event.eventStart,
                         event.eventEnd,
                         event.eventStatus,
