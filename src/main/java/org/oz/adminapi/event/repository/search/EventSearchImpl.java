@@ -9,6 +9,8 @@ import org.oz.adminapi.event.domain.EventEntity;
 import org.oz.adminapi.event.domain.QEventEntity;
 import org.oz.adminapi.event.domain.QEventHistoryEntity;
 import org.oz.adminapi.event.dto.EventDTO;
+import org.oz.adminapi.maker.domain.QMakerEntity;
+import org.oz.adminapi.store.domain.QStoreEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +25,6 @@ public class EventSearchImpl extends QuerydslRepositorySupport implements EventS
         super(EventEntity.class);
     }
 
-
     @Override
     public PageResponseDTO<EventDTO> getList(PageRequestDTO pageRequestDTO) {
 
@@ -34,22 +35,29 @@ public class EventSearchImpl extends QuerydslRepositorySupport implements EventS
 
         // QueryDSL의 QLocalManager 사용
         QEventEntity event = QEventEntity.eventEntity;
-        QEventHistoryEntity eventHistory = QEventHistoryEntity.eventHistoryEntity;
+        QMakerEntity maker = QMakerEntity.makerEntity;
+        QStoreEntity store = QStoreEntity.storeEntity;
 
         // 기본 JPQL 쿼리
         JPQLQuery<EventEntity> query = from(event);
+        query.leftJoin(maker).on(event.maker.eq(maker));
+        query.leftJoin(store).on(event.store.eq(store));
 
         // Pagination 적용
         this.getQuerydsl().applyPagination(pageable, query);
 
         JPQLQuery<EventDTO> dtoJPQLQuery = query
-                .select(Projections.fields(EventDTO.class,
-                        event.maker.makerBizNo,
+                .select(Projections.bean(EventDTO.class,
+                        event.eventNo,
+                        event.eventName,
                         event.eventStart,
                         event.eventEnd,
                         event.eventStatus,
-                        event.spaceRentStatus
-                ));
+                        event.spaceRentStatus,
+                        maker.makerName.as("makerName"),
+                        store.storeName.as("storeName")
+                ))
+                .where(event.delFlag.eq(false));
 
         // DTO 리스트 가져오기
         java.util.List<EventDTO> dtoList = dtoJPQLQuery.fetch();

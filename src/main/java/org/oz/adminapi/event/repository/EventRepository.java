@@ -11,10 +11,13 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<EventEntity, Long>, EventSearch {
 
-
     @Query("""
-    SELECT new org.oz.adminapi.event.dto.EventDTO(e.maker.makerBizNo, e.eventStart,e.eventEnd,e.eventStatus,e.spaceRentStatus) FROM EventEntity e WHERE e.eventNo = :eventNO
-""")
-    Optional<EventDTO> readEventDetailByEventNo(@Param("eventNO") Long eventNO);
-
+    SELECT new org.oz.adminapi.event.dto.EventDTO
+    (e.eventNo, e.eventName, e.eventStart, e.eventEnd, e.eventStatus, e.spaceRentStatus, m.makerName, s.storeName, e.regDate)
+    FROM EventEntity e
+    LEFT JOIN e.maker m
+    LEFT JOIN e.store s
+    WHERE e.eventNo = :eventNo
+    """)
+    Optional<EventDTO> readEventDetailByEventNo(@Param("eventNo") Long eventNo);
 }

@@ -44,5 +44,4 @@ public class StoreEntity extends BasicEntity {
 
     @Column(name = "issale")
     private Boolean issale;
-
 }

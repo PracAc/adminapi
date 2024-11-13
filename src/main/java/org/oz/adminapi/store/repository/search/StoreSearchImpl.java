@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 public class StoreSearchImpl extends QuerydslRepositorySupport implements StoreSearch {
 
     public StoreSearchImpl() {
@@ -35,22 +33,25 @@ public class StoreSearchImpl extends QuerydslRepositorySupport implements StoreS
 
         // 기본 JPQL 쿼리
         JPQLQuery<StoreEntity> query = from(store);
+        query.leftJoin(localManager).on(store.localManager.eq(localManager));
 
         // Pagination 적용
         this.getQuerydsl().applyPagination(pageable, query);
 
         JPQLQuery<StoreDTO> dtoJPQLQuery = query
                 .select(Projections.bean(StoreDTO.class,
+                        store.storeNo,
                         localManager.managerName,
                         store.storeName,
                         store.storeContact,
                         store.isRentAvailable
-                ));
+                ))
+                // 판매매장 등록이 된 지점만 조회하기위한 조건문
+                .where(store.issale.eq(true)
+                        .and(store.delFlag.eq(false)));
 
         // DTO 리스트 가져오기
         java.util.List<StoreDTO> dtoList = dtoJPQLQuery.fetch();
-
-        dtoList.forEach(log::info);
 
         long total = dtoJPQLQuery.fetchCount();
 
