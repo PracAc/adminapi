@@ -20,6 +20,8 @@ public class MakerListDTO {
 
     private BasicStatus makerStatus;
 
+    private LocalDateTime regDate;
+
     private LocalDateTime modDate;
 
 }

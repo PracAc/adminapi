@@ -3,6 +3,7 @@ package org.oz.adminapi.maker.repository.search;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.domain.MakerEntity;
@@ -33,13 +34,14 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
 
         this.getQuerydsl().applyPagination(pageable, query);
         JPQLQuery<MakerListDTO> dtojpqlQuery = query.select(
-                Projections.bean(MakerListDTO.class,
-                        maker.makerBizNo,
-                        maker.makerName,
-                        maker.makerStatus,
-                        maker.modDate
+                        Projections.bean(MakerListDTO.class,
+                                maker.makerBizNo,
+                                maker.makerName,
+                                maker.regDate,
+                                maker.modDate
+                        )
                 )
-        );
+                .where(maker.makerStatus.eq(BasicStatus.ACCEPTED));
 
         java.util.List<MakerListDTO> dtoList = dtojpqlQuery.fetch();
 
