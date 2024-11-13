@@ -7,7 +7,6 @@ import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.event.domain.EventEntity;
 
 import org.oz.adminapi.event.domain.QEventEntity;
-import org.oz.adminapi.event.domain.QEventHistoryEntity;
 import org.oz.adminapi.event.dto.EventDTO;
 import org.oz.adminapi.maker.domain.QMakerEntity;
 import org.oz.adminapi.store.domain.QStoreEntity;
