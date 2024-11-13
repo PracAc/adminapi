@@ -1,6 +1,5 @@
 package org.oz.adminapi.maker.service;
 
-import com.querydsl.jpa.JPQLQuery;
 import lombok.RequiredArgsConstructor;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
@@ -10,13 +9,12 @@ import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
 import org.oz.adminapi.maker.dto.MakerReadDTO;
 import org.oz.adminapi.maker.repository.MakerRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,15 +28,14 @@ public class MakerService {
         return makerRepository.makerlist(pageRequestDTO);
     }
 
-    public ResponseEntity<MakerReadDTO> readMaker(String makerBizNo) {
+    public MakerReadDTO readMaker(String makerBizNo) {
 
         Optional<MakerEntity> result = makerRepository.findWithFilesByMakerBizNo(makerBizNo);
 
         MakerEntity makerEntity = result.get();
 
         List<String> attachFileNames = makerEntity.getAttachFiles().stream()
-                .map(file -> file.getFileName())
-                .toList();
+                .map(file -> file.getFileName()).collect(Collectors.toList());
 
         MakerReadDTO makerReadDTO = MakerReadDTO.builder()
                 .makerBizNo(makerEntity.getMakerBizNo())
@@ -49,38 +46,40 @@ public class MakerService {
                 .makerAddr(makerEntity.getMakerAddr())
                 .makerAddrDetail(makerEntity.getMakerAddrDetail())
                 .attachFileNames(attachFileNames)
-                .createDate(makerEntity.getCreateDate())
-                .lastModifiedDate(makerEntity.getLastModifiedDate())
-                .delFlag(makerEntity.getDelFlag())
-                .creatorName(makerEntity.getCreatorName())
                 .build();
 
-        return ResponseEntity.ok(makerReadDTO);
+        return makerReadDTO;
     }
 
-    public ResponseEntity<MakerEntity> modifyMaker(String makerBizId, MakerModifyDTO modifyDTO) {
+    public String modifyStatus(MakerModifyDTO modifyDTO) {
         log.info("updateMaker---------------------------------------------");
 
-        Optional<MakerEntity> optionalMakerEntity = makerRepository.findWithFilesByMakerBizNo(makerBizId);
+        Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(modifyDTO.getMakerBizNo());
         if (optionalMakerEntity.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new RuntimeException("ssssssssssssssssss");
+        }
+
+        MakerEntity updateMakerEntity = optionalMakerEntity.get();
+        if (modifyDTO.getMakerStatus() == 1){
+            updateMakerEntity.changeStatusAccepted();
+        }
+        if (modifyDTO.getMakerStatus() == 2){
+            updateMakerEntity.changeStatusRejected();
+        }
+
+        return updateMakerEntity.getMakerBizNo();
+    }
+
+    public String delMaker(String makerBizNo){
+        Optional<MakerEntity> optionalMakerEntity = makerRepository.findById(makerBizNo);
+        if (optionalMakerEntity.isEmpty()) {
+            throw new RuntimeException("ssssssssssssssssss");
         }
 
         MakerEntity makerEntity = optionalMakerEntity.get();
 
-        // 일반 필드 업데이트
-        MakerEntity updatedEntity = makerEntity.update(
-                modifyDTO.getMakerName(),
-                modifyDTO.getMakerEmail(),
-                modifyDTO.getMakerPhone(),
-                modifyDTO.getMakerPostnum(),
-                modifyDTO.getMakerAddr(),
-                modifyDTO.getMakerAddrDetail()
-        );
+        makerEntity.changeDelFlag(true);
 
-        // attachFiles 업데이트
-        updatedEntity.updateAttachFiles(modifyDTO.getAttachFileNames());
-
-        return ResponseEntity.ok(updatedEntity); // 더티 체킹에 의해 변경 사항이 자동 반영됨
+        return makerEntity.getMakerBizNo();
     }
 }

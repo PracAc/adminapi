@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
+@Builder
 @Getter
 @ToString(exclude = {"attachFiles"}, callSuper = true)
 @Table(name = "admin_maker")
@@ -19,21 +20,30 @@ import java.util.Set;
 public class MakerEntity extends BasicEntity {
 
     @Id
-    //제작자 사업자 번호 (PK)
+    @Column(name = "maker_biz_no", nullable = false)
     private String makerBizNo;
 
-    //제작자 정보 부분
+    //제작자 정보
+    @Column(name = "maker_name")
     private String makerName;
+    @Column(name = "maker_email")
     private String makerEmail;
+    @Column(name = "maker_phone")
     private String makerPhone;
 
     //제작자 주소 부분
+    @Column(name = "maker_postnum")
     private String makerPostnum;
+    @Column(name = "maker_addr")
     private String makerAddr;
+    @Column(name = "maker_addr_detail")
     private String makerAddrDetail;
 
     //제작자 승인 상태
-    private int makerStatus;
+    @Enumerated(EnumType.ORDINAL)
+    @Builder.Default
+    @Column(name = "maker_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus makerStatus = BasicStatus.PENDING;
 
     @ElementCollection
     @Builder.Default
@@ -44,33 +54,21 @@ public class MakerEntity extends BasicEntity {
     //제작자 포트폴리오 파일
     private Set<AttachFile> attachFiles = new HashSet<>();
 
-    public void addFile(String filename){
-        attachFiles.add(new AttachFile(attachFiles.size(), filename));
-    }
-
     public void clearFiles(){
         attachFiles.clear();
     }
-
-
-    public MakerEntity update(String name, String email, String phone, String postnum, String addr, String addrDetail) {
-        return MakerEntity.builder()
-                .makerBizNo(this.makerBizNo) // 기존 ID 유지
-                .makerName(name != null ? name : this.makerName)
-                .makerEmail(email != null ? email : this.makerEmail)
-                .makerPhone(phone != null ? phone : this.makerPhone)
-                .makerPostnum(postnum != null ? postnum : this.makerPostnum)
-                .makerAddr(addr != null ? addr : this.makerAddr)
-                .makerAddrDetail(addrDetail != null ? addrDetail : this.makerAddrDetail)
-                .makerStatus(this.makerStatus)
-                .attachFiles(this.attachFiles) // 파일 목록 유지
-                .build();
-    }
-
-    // 파일 목록을 교체하는 메서드
     public void updateAttachFiles(java.util.List<String> newFileNames) {
         this.attachFiles.clear();
         newFileNames.forEach(name -> attachFiles.add(new AttachFile(attachFiles.size(), name)));
     }
 
+    public void changeStatusPending(){
+        this.makerStatus = BasicStatus.PENDING;
+    }
+    public void changeStatusAccepted() {
+        this.makerStatus = BasicStatus.ACCEPTED;
+    }
+    public void changeStatusRejected() {
+        this.makerStatus = BasicStatus.REJECTED;
+    }
 }

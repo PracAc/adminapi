@@ -1,5 +1,6 @@
 package org.oz.adminapi.common.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -16,18 +17,22 @@ import java.time.LocalDateTime;
 @ToString
 public abstract class BasicEntity {
 
-    private Boolean delFlag = false;
+    @Column(name = "del_flag", columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean delFlag = Boolean.FALSE;
+
+    @Column(name = "reg_date")
+    @CreatedDate
+    private LocalDateTime regDate;
+
+    @Column(name = "mod_date")
+    @LastModifiedDate
+    private LocalDateTime modDate;
+
+    @Column(name = "creator")
+    private String creator;
 
     // Soft Delete Boolean 값 변경
-    public Boolean changeDelFlag(){
-        return !delFlag;
+    public Boolean changeDelFlag(Boolean newDelFlag){
+        return this.delFlag = newDelFlag;
     }
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
-
-    private String creatorName;
 }

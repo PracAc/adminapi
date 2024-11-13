@@ -15,6 +15,7 @@ public class ProductCategoryEntity extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_category_no")
     // 상품 카테고리 id
     private Long productCategoryNo;
 
