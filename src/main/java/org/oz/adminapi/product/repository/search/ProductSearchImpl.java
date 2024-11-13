@@ -3,6 +3,7 @@ package org.oz.adminapi.product.repository.search;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.product.domain.ProductEntity;
@@ -47,9 +48,10 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
                         product.productNo,
                         category.categoryNo,
                         product.productName,
+                        product.regDate,
                         product.productStatus
-                )
-        );
+                ));
+        // .where(product.productStatus.eq(BasicStatus.ACCEPTED));
 
         java.util.List<ProductListDTO> dtoList = dtojpqlQuery.fetch();
 
@@ -64,3 +66,4 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
                 .build();
     }
 }
+

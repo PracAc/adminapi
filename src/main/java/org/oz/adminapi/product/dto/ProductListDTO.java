@@ -1,6 +1,10 @@
 package org.oz.adminapi.product.dto;
 
 import lombok.*;
+import org.oz.adminapi.common.domain.BasicStatus;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,5 +18,7 @@ public class ProductListDTO {
 
     private String productName;
 
-    private int productStatus;
+    private LocalDateTime regDate;
+
+    private BasicStatus productStatus;
 }
