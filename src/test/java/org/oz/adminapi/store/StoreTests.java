@@ -1,6 +1,7 @@
 package org.oz.adminapi.store;
 
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oz.adminapi.area.repository.AreaCodeRepository;
 import org.oz.adminapi.localmaneger.repository.LocalManagerRepository;
@@ -26,6 +27,7 @@ public class StoreTests {
     @Test
     @Transactional
     @Commit
+    @Disabled
     public void storeDummies(){
 
         for (int i = 1; i <= 10; i++) {
@@ -38,7 +40,6 @@ public class StoreTests {
                     .storeLatitude("Latitude"+i)
                     .storeLongitude("Longitude"+i)
                     .isRentAvailable(true)
-                    .issale(true)
                     .build();
 
             storeRepository.save(store);

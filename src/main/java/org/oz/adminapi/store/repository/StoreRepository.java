@@ -19,4 +19,12 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long>, Store
             "LEFT JOIN s.localManager lm " +
             "WHERE s.storeNo = :storeNo")
     Optional<StoreDTO> findStoreByStoreNo(Long storeNo);
+
+    // 상세 조회 쿼리 (StoreDTO에 맞춰서 필요한 칼럼을 조회)
+    @Query("SELECT new org.oz.adminapi.store.dto.StoreDTO" +
+            "(s.storeName, lm.managerName, s.storeContact, s.storeLatitude, s.storeLongitude, s.isRentAvailable, s.storeApprovalStatus) " +
+            "FROM StoreEntity s " +
+            "LEFT JOIN s.localManager lm " +
+            "WHERE s.storeNo = :storeNo")
+    Optional<StoreDTO> findApplyStoreByStoreNo(Long storeNo);
 }

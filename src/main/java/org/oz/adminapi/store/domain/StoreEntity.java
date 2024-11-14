@@ -3,6 +3,7 @@ package org.oz.adminapi.store.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.localmaneger.domain.LocalManager;
 import org.oz.adminapi.area.domain.AreaCode;
 
@@ -11,6 +12,7 @@ import org.oz.adminapi.area.domain.AreaCode;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Getter
 @Table(name = "admin_store")
 public class StoreEntity extends BasicEntity {
 
@@ -42,6 +44,19 @@ public class StoreEntity extends BasicEntity {
     @Builder.Default
     private Boolean isRentAvailable = Boolean.FALSE;
 
-    @Column(name = "issale")
-    private Boolean issale;
+    @Enumerated(EnumType.ORDINAL)
+    @Builder.Default
+    @Column(name = "store_approval_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus storeApprovalStatus = BasicStatus.PENDING;
+
+    public void changeStatusPending(){
+        this.storeApprovalStatus = BasicStatus.PENDING;
+    }
+    public void changeStatusAccepted() {
+        this.storeApprovalStatus = BasicStatus.ACCEPTED;
+    }
+    public void changeStatusRejected() {
+        this.storeApprovalStatus = BasicStatus.REJECTED;
+    }
+
 }

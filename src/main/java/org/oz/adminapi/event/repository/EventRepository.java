@@ -4,7 +4,6 @@ import org.oz.adminapi.event.domain.EventEntity;
 import org.oz.adminapi.event.dto.EventDTO;
 import org.oz.adminapi.event.repository.search.EventSearch;
 import org.oz.adminapi.product.domain.ProductEntity;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +15,7 @@ public interface EventRepository extends JpaRepository<EventEntity, Long>, Event
 
     @Query("""
     SELECT new org.oz.adminapi.event.dto.EventDTO
-    (e.eventNo, e.eventName, e.eventStart, e.eventEnd, e.eventStatus, e.spaceRentStatus, m.makerName, s.storeName, e.regDate)
+    (e.eventNo, e.eventName, e.eventStart, e.eventEnd, e.eventStatus, e.spaceRentStatus, m.makerName, s.storeName, e.regDate, e.approvalStatus)
     FROM EventEntity e
     LEFT JOIN e.maker m
     LEFT JOIN e.store s

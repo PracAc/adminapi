@@ -2,6 +2,7 @@ package org.oz.adminapi.event.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oz.adminapi.common.domain.BasicEntity;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.store.domain.StoreEntity;
 
@@ -50,6 +51,12 @@ public class EventEntity extends BasicEntity {
     @Builder.Default
     @CollectionTable(name = "admin_event_history", joinColumns = @JoinColumn(name = "event_no"))
     private Set<EventHistoryEntity> eventHistoryEntities = new HashSet<>();
+
+    // 이벤트 승인 상태
+    @Enumerated(EnumType.ORDINAL)
+    @Builder.Default
+    @Column(name = "approval_status", columnDefinition = "INT DEFAULT 0")
+    private BasicStatus approvalStatus = BasicStatus.PENDING;
 
     public void initHistory(EventHistoryEntity eventHistory){
         this.eventHistoryEntities.add(eventHistory);

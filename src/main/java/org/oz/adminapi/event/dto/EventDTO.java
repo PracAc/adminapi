@@ -1,7 +1,7 @@
 package org.oz.adminapi.event.dto;
 
 import lombok.*;
-import org.oz.adminapi.common.domain.AttachFile;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.event.domain.EventStatus;
 
 import java.time.LocalDate;
@@ -25,11 +25,12 @@ public class EventDTO {
     private String makerName; // MakerEntity의 makerName
     private String storeName; // StoreEntity의 storeName
     private LocalDateTime regDate;
+    private BasicStatus approvalStatus;
 
     @Setter
     private Map<Long, List<String>> productImages = new HashMap<>();
 
-    public EventDTO(Long eventNo, String eventName, LocalDate eventStart, LocalDate eventEnd, EventStatus eventStatus, Boolean spaceRentStatus, String makerName, String storeName, LocalDateTime regDate) {
+    public EventDTO(Long eventNo, String eventName, LocalDate eventStart, LocalDate eventEnd, EventStatus eventStatus, Boolean spaceRentStatus, String makerName, String storeName, LocalDateTime regDate, BasicStatus approvalStatus) {
         this.eventNo = eventNo;
         this.eventName = eventName;
         this.eventStart = eventStart;
@@ -39,5 +40,6 @@ public class EventDTO {
         this.makerName = makerName;
         this.storeName = storeName;
         this.regDate = regDate;
+        this.approvalStatus = approvalStatus;
     }
 }
