@@ -1,16 +1,18 @@
-package org.oz.adminapi.product.dto;
+package org.oz.adminapi.applymanagements.product.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.oz.adminapi.common.domain.BasicStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductListDTO {
+public class ApplyManagementProductListDTO {
 
     private Long productNo;
 

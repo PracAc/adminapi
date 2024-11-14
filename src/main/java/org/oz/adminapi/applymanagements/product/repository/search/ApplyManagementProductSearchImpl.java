@@ -1,30 +1,27 @@
-package org.oz.adminapi.product.repository.search;
+package org.oz.adminapi.applymanagements.product.repository.search;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
-import org.oz.adminapi.common.domain.BasicStatus;
+import org.oz.adminapi.applymanagements.product.dto.ApplyManagementProductListDTO;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.product.domain.ProductEntity;
 import org.oz.adminapi.product.domain.QCategoryEntity;
 import org.oz.adminapi.product.domain.QProductCategoryEntity;
 import org.oz.adminapi.product.domain.QProductEntity;
-import org.oz.adminapi.product.dto.ProductListDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 @Log4j2
-public class ProductSearchImpl extends QuerydslRepositorySupport implements ProductSearch {
+public class ApplyManagementProductSearchImpl extends QuerydslRepositorySupport implements ApplyManagementProductSearch {
 
-    public ProductSearchImpl() {super(ProductEntity.class);}
+    public ApplyManagementProductSearchImpl() {super(ProductEntity.class);}
 
     @Override
-    public PageResponseDTO<ProductListDTO> productList(PageRequestDTO pageRequestDTO) {
-
-        log.info("---------- product list ----------");
+    public PageResponseDTO<ApplyManagementProductListDTO> applyProductList(PageRequestDTO pageRequestDTO) {
 
         Pageable pageable = PageRequest.of(
                 pageRequestDTO.getPage()-1,
@@ -43,26 +40,26 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
 
         this.getQuerydsl().applyPagination(pageable,query);
 
-        JPQLQuery<ProductListDTO> dtojpqlQuery = query.select(
-                Projections.bean(ProductListDTO.class,
+        JPQLQuery<ApplyManagementProductListDTO> dtojpqlQuery = query.select(
+                Projections.bean(ApplyManagementProductListDTO.class,
                         product.productNo,
                         category.categoryNo,
                         product.productName,
-                        product.regDate
-                ))
-                .where(product.productStatus.eq(BasicStatus.ACCEPTED));
+                        product.regDate,
+                        product.productStatus
+                )
+        );
 
-        java.util.List<ProductListDTO> dtoList = dtojpqlQuery.fetch();
+        java.util.List<ApplyManagementProductListDTO> dtoList = dtojpqlQuery.fetch();
 
         dtoList.forEach(log::info);
 
         long total = dtojpqlQuery.fetchCount();
 
-        return PageResponseDTO.<ProductListDTO>withAll()
+        return PageResponseDTO.<ApplyManagementProductListDTO>withAll()
                 .dtoList(dtoList)
                 .pageRequestDTO(pageRequestDTO)
                 .totalCount(total)
                 .build();
     }
 }
-

@@ -59,4 +59,10 @@ public class ProductEntity extends BasicEntity {
         newFileNames.forEach(name -> attachFiles.add(new AttachFile(attachFiles.size(), name)));
     }
 
+    public void changeProductStatusPending() { this.productStatus = BasicStatus.PENDING; }
+    public void changeProductStatusAccepted() {this.productStatus = BasicStatus.ACCEPTED;}
+    public void changeProductStatusRejected() {
+        this.productStatus = BasicStatus.REJECTED;
+    }
+
 }
