@@ -6,6 +6,7 @@ import org.oz.adminapi.applymanagements.maker.dto.ApplyManagementMakerListDTO;
 import org.oz.adminapi.applymanagements.maker.dto.ApplyManagementMakerModifyDTO;
 import org.oz.adminapi.applymanagements.maker.dto.ApplyManagementMakerReadDTO;
 import org.oz.adminapi.applymanagements.maker.repository.ApplyManagementMakerRepository;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.domain.MakerEntity;
@@ -64,10 +65,10 @@ public class ApplyManagementMakerService {
         }
 
         MakerEntity updateEntity = optionalApplyMakerEntity.get();
-        if (applyManagementMakerModifyDTO.getMakerStatus() == 1) {
+        if (applyManagementMakerModifyDTO.getMakerStatus() == BasicStatus.ACCEPTED) {
             updateEntity.changeStatusAccepted();
         }
-        if (applyManagementMakerModifyDTO.getMakerStatus() == 2){
+        if (applyManagementMakerModifyDTO.getMakerStatus() == BasicStatus.REJECTED){
             updateEntity.changeStatusRejected();
         }
 

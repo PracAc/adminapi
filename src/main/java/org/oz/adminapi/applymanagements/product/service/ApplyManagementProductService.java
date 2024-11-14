@@ -6,6 +6,7 @@ import org.oz.adminapi.applymanagements.product.dto.ApplyManagementProductListDT
 import org.oz.adminapi.applymanagements.product.dto.ApplyManagementProductModifyDTO;
 import org.oz.adminapi.applymanagements.product.dto.ApplyManagementProductReadDTO;
 import org.oz.adminapi.applymanagements.product.repository.ApplyManagementProductRepository;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.product.domain.CategoryEntity;
@@ -81,10 +82,10 @@ public class ApplyManagementProductService {
         }
 
         ProductEntity updateEntity = optionalProductEntity.get();
-        if(applyManagementProductModifyDTO.getProductStatus() == 1) {
+        if(applyManagementProductModifyDTO.getProductStatus() == BasicStatus.ACCEPTED) {
             updateEntity.changeProductStatusAccepted();
         }
-        if (applyManagementProductModifyDTO.getProductStatus() == 2) {
+        if (applyManagementProductModifyDTO.getProductStatus() == BasicStatus.REJECTED) {
             updateEntity.changeProductStatusRejected();
         }
 
