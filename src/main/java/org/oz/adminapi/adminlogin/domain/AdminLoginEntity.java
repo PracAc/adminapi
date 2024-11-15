@@ -21,4 +21,8 @@ public class AdminLoginEntity {
 
     @Column(name="adminName", nullable = false)
     private String adminName;
+
+    public void changePassword(String pw){
+        this.adminPw = pw;
+    }
 }

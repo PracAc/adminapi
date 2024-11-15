@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.oz.adminapi.adminlogin.exception.AdminLoginException;
 import org.oz.adminapi.security.auth.AdminLoginPrincipal;
 import org.oz.adminapi.security.util.JWTUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -69,13 +69,12 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             log.info(claims);
 
             String adminId = (String) claims.get("adminId");
-            String role = (String) claims.get("role");
 
             Principal userPrincipal = new AdminLoginPrincipal(adminId);
 
             UsernamePasswordAuthenticationToken authenticationToken
                     = new UsernamePasswordAuthenticationToken(userPrincipal, null,
-                    List.of(new SimpleGrantedAuthority("ROLE_"+role)));
+                    List.of());
 
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authenticationToken);
@@ -83,16 +82,10 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         }catch(JwtException e){
-
-            log.info(e.getClass().getName());
-            log.info(e.getMessage());
-            log.info("-----------------------------");
-
-            String classFullName = e.getClass().getName();
-
-            String shortClassName = classFullName.substring(classFullName.lastIndexOf(".") + 1);
-
-            makeError(response, Map.of("status",401, "msg",shortClassName) );
+            AdminLoginException exception = AdminLoginException.ACCESSTOKEN_EXPIRED;
+            String errorMessage = exception.getMessage();
+            int statusCode = exception.getStatus();
+            makeError(response, Map.of("status", statusCode, "msg", errorMessage));
 
             e.printStackTrace();
         }

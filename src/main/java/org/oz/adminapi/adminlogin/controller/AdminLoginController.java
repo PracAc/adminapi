@@ -1,16 +1,16 @@
 package org.oz.adminapi.adminlogin.controller;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.oz.adminapi.adminlogin.dto.AdminLoginDTO;
+import org.oz.adminapi.adminlogin.dto.ErrorResponseDTO;
 import org.oz.adminapi.adminlogin.dto.TokenRequestDTO;
 import org.oz.adminapi.adminlogin.dto.TokenResponseDTO;
 import org.oz.adminapi.adminlogin.exception.AdminLoginException;
+import org.oz.adminapi.adminlogin.exception.AdminLoginTaskException;
 import org.oz.adminapi.adminlogin.service.AdminLoginService;
 import org.oz.adminapi.security.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +39,7 @@ public class AdminLoginController {
     private boolean alwaysNew;
 
     @PostMapping("makeToken")
-    public ResponseEntity<TokenResponseDTO> makeToken(@RequestBody @Validated TokenRequestDTO tokenRequestDTO) {
+    public ResponseEntity<?> makeToken(@RequestBody @Validated TokenRequestDTO tokenRequestDTO) {
         log.info("Making token");
         log.info("------------------------");
 
@@ -50,16 +50,21 @@ public class AdminLoginController {
                     tokenRequestDTO.getPw()
             );
 
-            if (adminLoginDTO == null) {
-                log.error("Authentication failed for adminId: {}", tokenRequestDTO.getAdminId());
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            if (tokenRequestDTO.getAdminId() == null || tokenRequestDTO.getAdminId().isEmpty() ||
+                    tokenRequestDTO.getPw() == null || tokenRequestDTO.getPw().isEmpty()) {
+                log.error("아이디나 비밀번호가 비어 있거나 null입니다.");
+                AdminLoginTaskException exception = AdminLoginException.BAD_AUTH.getException();
+
+                return ResponseEntity.status(exception.getStatus()).body(null);
             }
         } catch (Exception e) {
-            log.error("Authentication error: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            log.error("authenticate에서 문제가 발생했습니다.: {}", e.getMessage());
+            AdminLoginTaskException exception = AdminLoginException.BAD_AUTH.getException();
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO();
+            errorResponse.setStatus(exception.getStatus());
+            errorResponse.setMessage(exception.getMessage());
+            return ResponseEntity.status(exception.getStatus()).body(errorResponse);
         }
-
-        log.info("Authenticated successfully: {}", adminLoginDTO);
 
         Map<String, Object> claimMap = new HashMap<>();
         claimMap.put("adminId", adminLoginDTO.getAdminID());
@@ -78,28 +83,30 @@ public class AdminLoginController {
         return ResponseEntity.ok(tokenResponseDTO);
     }
 
-    @PostMapping(value="refreshToken",
+    @PostMapping(value = "refreshToken",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<TokenResponseDTO> refreshToken(@RequestHeader("Authorization") String accessToken, String refreshToken) {
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String accessToken,
+                                          @RequestParam String refreshToken) {
 
-        //만일 accessToken이 없다면 혹은 refreshToken이 없다면
-        if(accessToken == null || refreshToken == null) {
+        // accessToken 또는 refreshToken이 없는 경우 처리
+        if (accessToken == null || refreshToken == null) {
             log.info("Please provide accessToken and refreshToken together.");
-            throw AdminLoginException.TOKEN_NOT_ENOUGH.get();
+            return createErrorResponse(AdminLoginException.TOKEN_NOT_ENOUGH);
         }
-        //accessToken Bearer (7) 잘라낼때 문제가 발생한다면
-        if(!accessToken.startsWith("Bearer ")) {
+
+        // accessToken의 형식이 올바르지 않은 경우 처리
+        if (!accessToken.startsWith("Bearer ")) {
             log.info("AccessToken has wrong format.");
-            throw AdminLoginException.ACCESSTOKEN_TOO_SHORT.get();
+            return createErrorResponse(AdminLoginException.ACCESSTOKEN_TOO_SHORT);
         }
+
+        // "Bearer "를 제외한 실제 토큰 부분 추출
         String accessTokenStr = accessToken.substring("Bearer ".length());
 
-        //AccessToken의 만료 여부 체크
-        try{
-            Map<String,Object> payload = jwtUtil.validateToken(accessTokenStr);
-
+        // accessToken 검증
+        try {
+            Map<String, Object> payload = jwtUtil.validateToken(accessTokenStr);
             String adminId = payload.get("adminId").toString();
 
             TokenResponseDTO tokenResponseDTO = new TokenResponseDTO();
@@ -107,34 +114,67 @@ public class AdminLoginController {
             tokenResponseDTO.setAdminId(adminId);
             tokenResponseDTO.setRefreshToken(refreshToken);
 
-            return ResponseEntity.ok(tokenResponseDTO);
+            // accessToken 검증 성공 후, refreshToken 검증
+            try {
+                Map<String, Object> payloadRefresh = jwtUtil.validateToken(refreshToken);
+                String refreshAdminId = payloadRefresh.get("adminId").toString();
 
-        }catch(ExpiredJwtException ex){
-            //정상적으로 만료된 경우
+                String newAccessToken = null;
+                String newRefreshToken = null;
 
-            //만일 Refresh Token마저 만료되었다면 catch
-            try{
-                Map<String,Object> payload = jwtUtil.validateToken(refreshToken);
-                String adminId = payload.get("adminId").toString();
-                String newAccesToken = null;
-                String newRrefreshToken = null;
-
-                if(alwaysNew) {
+                if (alwaysNew) {
                     Map<String, Object> claimMap = Map.of("adminId", adminId);
-                    newAccesToken = jwtUtil.createToken(claimMap,accessTime);
-                    newRrefreshToken = jwtUtil.createToken(claimMap,refreshTime);
+                    newAccessToken = jwtUtil.createToken(claimMap, accessTime);
+                    newRefreshToken = jwtUtil.createToken(claimMap, refreshTime);
                 }
-                TokenResponseDTO tokenResponseDTO = new TokenResponseDTO();
-                tokenResponseDTO.setAccessToken(newAccesToken);
-                tokenResponseDTO.setRefreshToken(newRrefreshToken);
+
+                tokenResponseDTO.setAccessToken(newAccessToken);
+                tokenResponseDTO.setRefreshToken(newRefreshToken);
                 tokenResponseDTO.setAdminId(adminId);
 
                 return ResponseEntity.ok(tokenResponseDTO);
 
-            }catch(ExpiredJwtException ex2){
-                throw AdminLoginException.REQUIRE_SIGN_IN.get();
+            } catch (Exception refreshEx) {
+                // refreshToken이 만료되었거나 문제가 있을 경우
+                log.error("Refresh Token problem: {}", refreshEx.getMessage());
+                return createErrorResponse(AdminLoginException.REFRESHTOKEN_EXPIRED);
+            }
+
+        } catch (Exception accessEx) {
+            // accessToken이 잘못되었으면 상태 메시지 반환
+            log.error("Access Token problem: {}", accessEx.getMessage());
+            try{
+                Map<String, Object> payloadRefresh = jwtUtil.validateToken(refreshToken);
+                String adminId = payloadRefresh.get("adminId").toString();
+
+                // 새 액세스 토큰 발급
+                String newAccessToken = jwtUtil.createToken(Map.of("adminId", adminId), accessTime);
+
+                TokenResponseDTO tokenResponseDTO = new TokenResponseDTO();
+                tokenResponseDTO.setAccessToken(newAccessToken);
+                tokenResponseDTO.setRefreshToken(refreshToken);
+                tokenResponseDTO.setAdminId(adminId);
+
+                return ResponseEntity.ok(tokenResponseDTO);
+            } catch (Exception refreshEx) {
+                // refreshToken도 만료된 경우
+                log.error("Both Access Token and Refresh Token have issues: {}", refreshEx.getMessage());
+                return createErrorResponse(AdminLoginException.REFRESHTOKEN_EXPIRED);
             }
         }
+    }
+
+    // ErrorResponse 생성 함수
+    private ResponseEntity<ErrorResponseDTO> createErrorResponse(AdminLoginException exception) {
+        return createErrorResponse(exception, exception.getMessage());
+    }
+
+    // ErrorResponse 생성 함수 (커스터마이즈된 메시지 포함)
+    private ResponseEntity<ErrorResponseDTO> createErrorResponse(AdminLoginException exception, String customMessage) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO();
+        errorResponse.setStatus(exception.getStatus());
+        errorResponse.setMessage(customMessage);
+        return ResponseEntity.status(exception.getStatus()).body(errorResponse);
     }
 
 }

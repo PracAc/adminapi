@@ -26,14 +26,14 @@ public class AdminLoginService {
 
         Optional<AdminLoginEntity> result = adminLoginRepository.findById(adminId);
 
-        AdminLoginEntity admin = result.orElseThrow(() -> AdminLoginException.BAD_AUTH.get());
+        AdminLoginEntity admin = result.orElseThrow(() -> AdminLoginException.BAD_AUTH.getException());
 
         String enterPw = admin.getAdminPw();
         boolean match = passwordEncoder.matches(adminPw, enterPw);
 
         if(!match){
             log.info("Admin ID and Admin PW do not match");
-            throw AdminLoginException.BAD_AUTH.get();
+            throw AdminLoginException.BAD_AUTH.getException();
         }
 
         AdminLoginDTO adminLoginDTO = new AdminLoginDTO();

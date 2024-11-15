@@ -8,4 +8,6 @@ public class TokenResponseDTO {
     private String adminId;
     private String accessToken;
     private String refreshToken;
+    private int status;
+    private String message;
 }
