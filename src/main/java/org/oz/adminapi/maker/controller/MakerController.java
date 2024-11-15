@@ -7,14 +7,13 @@ import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.dto.MakerListDTO;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
 import org.oz.adminapi.maker.dto.MakerReadDTO;
+import org.oz.adminapi.maker.dto.MakerSearchDTO;
 import org.oz.adminapi.maker.service.MakerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.lang.annotation.Repeatable;
 
 @RestController
 @RequestMapping("/api/maker")
@@ -44,6 +43,11 @@ public class MakerController {
     @PutMapping("/delete/{makerBizNo}")
     public ResponseEntity<String> delMaker(@PathVariable(name = "makerBizNo")String makerBizNo){
         return ResponseEntity.ok(makerService.delMaker(makerBizNo));
+    }
+
+    @GetMapping("/search")
+    public PageResponseDTO<MakerListDTO> search(PageRequestDTO pageRequestDTO, MakerSearchDTO makerSearchDTO) {
+        return makerService.searchList(pageRequestDTO, makerSearchDTO);
     }
 
 

@@ -31,6 +31,7 @@ public class ApplyManagementMakerController {
         return ResponseEntity.ok(applyManagementMakerService.readApplyMaker(makerBizNo));
     }
 
+    // 제작자 신청서 승인 상태 변경
     @PutMapping("/modify")
     public ResponseEntity<String> updateApplyMaker(@RequestBody ApplyManagementMakerModifyDTO applyManagementMakerModifyDTO) {
         return ResponseEntity.ok(applyManagementMakerService.applyMakerModifyStatus(applyManagementMakerModifyDTO));

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.oz.adminapi.common.domain.BasicStatus;
 
 @Data
 @Builder
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class ApplyManagementProductModifyDTO {
     private Long productNo;
 
-    private int productStatus;
+    private BasicStatus productStatus;
 }

@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
 import org.oz.adminapi.maker.dto.MakerReadDTO;
+import org.oz.adminapi.maker.dto.MakerSearchDTO;
 import org.oz.adminapi.maker.repository.MakerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,10 @@ public class MakerService {
 
     public PageResponseDTO<MakerListDTO> getList(PageRequestDTO pageRequestDTO) {
         return makerRepository.makerlist(pageRequestDTO);
+    }
+
+    public PageResponseDTO<MakerListDTO> searchList(PageRequestDTO pageRequestDTO, MakerSearchDTO makerSearchDTO) {
+        return makerRepository.searchMaker(pageRequestDTO, makerSearchDTO);
     }
 
     public MakerReadDTO readMaker(String makerBizNo) {
@@ -82,4 +87,5 @@ public class MakerService {
 
         return makerEntity.getMakerBizNo();
     }
+
 }
