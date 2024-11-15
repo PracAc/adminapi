@@ -98,7 +98,8 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
                         maker.makerBizNo,
                         maker.regDate
                 )
-        );
+        )
+                .where(maker.makerStatus.eq(BasicStatus.ACCEPTED));
 
         java.util.List<MakerListDTO> dtoList = dtoQuery.fetch();
         long total = dtoQuery.fetchCount();

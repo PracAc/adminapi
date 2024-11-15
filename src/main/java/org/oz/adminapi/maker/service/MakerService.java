@@ -39,8 +39,12 @@ public class MakerService {
 
         MakerEntity makerEntity = result.get();
 
-        List<String> attachFileNames = makerEntity.getAttachFiles().stream()
-                .map(file -> file.getFileName()).collect(Collectors.toList());
+//        List<String> attachFileNames = makerEntity.getAttachFiles().stream()
+//                .map(file -> file.getFileName()).collect(Collectors.toList());
+
+        List<String> fileUrls = makerEntity.getAttachFiles().stream()
+                .map(file -> "http://Users/choejiho/upload/" + file.getFileName()) // nginx 경로 포함
+                .collect(Collectors.toList());
 
         MakerReadDTO makerReadDTO = MakerReadDTO.builder()
                 .makerBizNo(makerEntity.getMakerBizNo())
@@ -50,7 +54,7 @@ public class MakerService {
                 .makerPostnum(makerEntity.getMakerPostnum())
                 .makerAddr(makerEntity.getMakerAddr())
                 .makerAddrDetail(makerEntity.getMakerAddrDetail())
-                .attachFileNames(attachFileNames)
+                .attachFileNames(fileUrls)
                 .build();
 
         return makerReadDTO;
