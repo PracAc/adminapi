@@ -1,4 +1,4 @@
-package org.oz.adminapi.maker.dto;
+package org.oz.adminapi.applymanagements.maker.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MakerListDTO {
+public class ApplyManagementMakerListDTO {
 
     private String makerBizNo;
 
@@ -20,8 +20,5 @@ public class MakerListDTO {
 
     private BasicStatus makerStatus;
 
-    private LocalDateTime regDate;
-
     private LocalDateTime modDate;
-
 }

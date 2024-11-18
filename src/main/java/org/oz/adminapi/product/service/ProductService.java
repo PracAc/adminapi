@@ -2,19 +2,24 @@ package org.oz.adminapi.product.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.domain.MakerEntity;
+import org.oz.adminapi.maker.dto.MakerListDTO;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
+import org.oz.adminapi.maker.dto.MakerSearchDTO;
 import org.oz.adminapi.product.domain.CategoryEntity;
 import org.oz.adminapi.product.domain.ProductEntity;
 import org.oz.adminapi.product.dto.ProductListDTO;
 import org.oz.adminapi.product.dto.ProductModifyDTO;
 import org.oz.adminapi.product.dto.ProductReadDTO;
+import org.oz.adminapi.product.dto.ProductSearchDTO;
 import org.oz.adminapi.product.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -30,6 +36,11 @@ public class ProductService {
     public PageResponseDTO<ProductListDTO> getProductList(PageRequestDTO pageRequestDTO) {
 
         return productRepository.productList(pageRequestDTO);
+    }
+
+    // 상품 검색
+    public PageResponseDTO<ProductListDTO> searchProductList(PageRequestDTO pageRequestDTO, ProductSearchDTO productSearchDTO) {
+        return productRepository.searchProduct(pageRequestDTO, productSearchDTO);
     }
 
     public ProductReadDTO getProductWithDetails(Long productNo) {
@@ -54,8 +65,8 @@ public class ProductService {
 
 //        // 파일 이름 목록 생성
          List<String> attachFileNames = product.getAttachFiles().stream()
-                .map(file -> file.getFileName())
-                .toList();
+                .map(AttachFile::getFileName)
+                 .collect(Collectors.toList());
 
         // ProductReadDTO 생성
         ProductReadDTO readDTO = ProductReadDTO.builder()

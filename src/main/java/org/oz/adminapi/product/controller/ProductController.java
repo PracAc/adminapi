@@ -7,6 +7,7 @@ import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.product.dto.ProductListDTO;
 import org.oz.adminapi.product.dto.ProductModifyDTO;
 import org.oz.adminapi.product.dto.ProductReadDTO;
+import org.oz.adminapi.product.dto.ProductSearchDTO;
 import org.oz.adminapi.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,11 @@ public class ProductController {
     @PutMapping("/modify")
     public ResponseEntity<Long> putOne( @RequestBody ProductModifyDTO updateDTO){
         return ResponseEntity.ok(productService.modifyProduct(updateDTO));
+    }
+
+    // 상품 검색
+    @GetMapping("/search")
+    public PageResponseDTO<ProductListDTO> searchProduct(PageRequestDTO pageRequestDTO, ProductSearchDTO productSearchDTO) {
+        return productService.searchProductList(pageRequestDTO, productSearchDTO);
     }
 }

@@ -1,6 +1,7 @@
 package org.oz.adminapi.maker.service;
 
 import lombok.RequiredArgsConstructor;
+import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.dto.MakerListDTO;
@@ -8,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.maker.dto.MakerModifyDTO;
 import org.oz.adminapi.maker.dto.MakerReadDTO;
+import org.oz.adminapi.maker.dto.MakerSearchDTO;
 import org.oz.adminapi.maker.repository.MakerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +30,20 @@ public class MakerService {
         return makerRepository.makerlist(pageRequestDTO);
     }
 
+    public PageResponseDTO<MakerListDTO> searchList(PageRequestDTO pageRequestDTO, MakerSearchDTO makerSearchDTO) {
+        return makerRepository.searchMaker(pageRequestDTO, makerSearchDTO);
+    }
+
     public MakerReadDTO readMaker(String makerBizNo) {
 
         Optional<MakerEntity> result = makerRepository.findWithFilesByMakerBizNo(makerBizNo);
 
         MakerEntity makerEntity = result.get();
 
+        // 파일 이름만 추출
         List<String> attachFileNames = makerEntity.getAttachFiles().stream()
-                .map(file -> file.getFileName()).collect(Collectors.toList());
+                    .map(AttachFile::getFileName) // 파일명만 추출
+                .collect(Collectors.toList());
 
         MakerReadDTO makerReadDTO = MakerReadDTO.builder()
                 .makerBizNo(makerEntity.getMakerBizNo())
@@ -82,4 +90,5 @@ public class MakerService {
 
         return makerEntity.getMakerBizNo();
     }
+
 }

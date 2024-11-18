@@ -4,24 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.oz.adminapi.common.domain.BasicStatus;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MakerListDTO {
-
-    private String makerBizNo;
+public class MakerSearchDTO {
 
     private String makerName;
 
-    private BasicStatus makerStatus;
+    private LocalDateTime startDate;
 
-    private LocalDateTime regDate;
-
-    private LocalDateTime modDate;
-
+    private LocalDateTime endDate;
 }
