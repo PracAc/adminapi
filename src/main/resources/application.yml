@@ -30,8 +30,8 @@ spring:
 
 org:
   oz:
-    accessTime: 1
-    refreshTime: 2
+    accessTime: 60
+    refreshTime: 216000
     alwaysNew: true
     upload:
       path: upload

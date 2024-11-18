@@ -45,10 +45,13 @@ public class AdminLoginController {
 
         AdminLoginDTO adminLoginDTO = null;
         try {
+            log.info("try 진입");
             adminLoginDTO = adminLoginService.authenticate(
+
                     tokenRequestDTO.getAdminId(),
                     tokenRequestDTO.getPw()
             );
+            log.info("adminLoginDTO = " + adminLoginDTO);
 
             if (tokenRequestDTO.getAdminId() == null || tokenRequestDTO.getAdminId().isEmpty() ||
                     tokenRequestDTO.getPw() == null || tokenRequestDTO.getPw().isEmpty()) {
