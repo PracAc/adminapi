@@ -20,5 +20,7 @@ public class ProductListDTO {
 
     private LocalDateTime regDate;
 
+    private LocalDateTime modDate;
+
     private BasicStatus productStatus;
 }

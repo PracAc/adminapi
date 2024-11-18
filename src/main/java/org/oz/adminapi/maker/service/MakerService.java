@@ -1,6 +1,7 @@
 package org.oz.adminapi.maker.service;
 
 import lombok.RequiredArgsConstructor;
+import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.dto.MakerListDTO;
@@ -39,11 +40,9 @@ public class MakerService {
 
         MakerEntity makerEntity = result.get();
 
-//        List<String> attachFileNames = makerEntity.getAttachFiles().stream()
-//                .map(file -> file.getFileName()).collect(Collectors.toList());
-
-        List<String> fileUrls = makerEntity.getAttachFiles().stream()
-                .map(file -> "http://Users/choejiho/upload/" + file.getFileName()) // nginx 경로 포함
+        // 파일 이름만 추출
+        List<String> attachFileNames = makerEntity.getAttachFiles().stream()
+                    .map(AttachFile::getFileName) // 파일명만 추출
                 .collect(Collectors.toList());
 
         MakerReadDTO makerReadDTO = MakerReadDTO.builder()
@@ -54,7 +53,7 @@ public class MakerService {
                 .makerPostnum(makerEntity.getMakerPostnum())
                 .makerAddr(makerEntity.getMakerAddr())
                 .makerAddrDetail(makerEntity.getMakerAddrDetail())
-                .attachFileNames(fileUrls)
+                .attachFileNames(attachFileNames)
                 .build();
 
         return makerReadDTO;
