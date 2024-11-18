@@ -70,9 +70,8 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        // 제작자명 검색 조건 추가
         if (makerSearchDTO.getMakerName() != null && !makerSearchDTO.getMakerName().isEmpty()) {
-            builder.and(maker.makerName.containsIgnoreCase(makerSearchDTO.getMakerName()));
+            builder.and(maker.makerName.startsWithIgnoreCase(makerSearchDTO.getMakerName()));
         }
 
         // 승인일(modDate) 검색 조건 추가 (시작 날짜와 종료 날짜)
@@ -98,7 +97,8 @@ public class MakerSearchImpl extends QuerydslRepositorySupport implements MakerS
                         maker.makerBizNo,
                         maker.regDate
                 )
-        );
+        )
+                .where(maker.makerStatus.eq(BasicStatus.ACCEPTED));
 
         java.util.List<MakerListDTO> dtoList = dtoQuery.fetch();
         long total = dtoQuery.fetchCount();

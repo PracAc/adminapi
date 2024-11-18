@@ -1,6 +1,7 @@
 package org.oz.adminapi.maker.service;
 
 import lombok.RequiredArgsConstructor;
+import org.oz.adminapi.common.domain.AttachFile;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.maker.dto.MakerListDTO;
@@ -39,8 +40,10 @@ public class MakerService {
 
         MakerEntity makerEntity = result.get();
 
+        // 파일 이름만 추출
         List<String> attachFileNames = makerEntity.getAttachFiles().stream()
-                .map(file -> file.getFileName()).collect(Collectors.toList());
+                    .map(AttachFile::getFileName) // 파일명만 추출
+                .collect(Collectors.toList());
 
         MakerReadDTO makerReadDTO = MakerReadDTO.builder()
                 .makerBizNo(makerEntity.getMakerBizNo())
