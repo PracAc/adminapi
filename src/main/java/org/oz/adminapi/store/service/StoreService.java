@@ -6,10 +6,10 @@ import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.store.domain.StoreEntity;
 import org.oz.adminapi.store.dto.StoreDTO;
+import org.oz.adminapi.store.dto.StoreSearchDTO;
 import org.oz.adminapi.store.repository.StoreRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.Optional;
 
@@ -38,6 +38,11 @@ public class StoreService {
     // 상세 조회 (storeNo로 조회)
     public Optional<StoreDTO> readApplyStoreDetailByStoreNo(Long storeNo) {
         return storeRepository.findApplyStoreByStoreNo(storeNo);
+    }
+
+    // list 검색 기능
+    public PageResponseDTO<StoreDTO> searchList(PageRequestDTO pageRequestDTO, StoreSearchDTO storeSearchDTO) {
+        return storeRepository.searchStore(pageRequestDTO, storeSearchDTO);
     }
 
     // 이벤트 신청 관리 - 지점 신청 상태 변경

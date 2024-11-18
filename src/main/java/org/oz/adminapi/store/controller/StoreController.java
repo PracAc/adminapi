@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.store.dto.StoreDTO;
+import org.oz.adminapi.store.dto.StoreSearchDTO;
 import org.oz.adminapi.store.service.StoreService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,5 +32,11 @@ public class StoreController {
     @GetMapping("read/{storeNo}")
     public Optional<StoreDTO> getStoreDetailByStoreNo(@PathVariable("storeNo") Long storeNo) {
         return storeService.readStoreDetailByStoreNo(storeNo);
+    }
+
+    // 검색 API
+    @GetMapping("/search")
+    public PageResponseDTO<StoreDTO> search(PageRequestDTO pageRequestDTO, StoreSearchDTO storeSearchDTO) {
+        return storeService.searchList(pageRequestDTO, storeSearchDTO);
     }
 }

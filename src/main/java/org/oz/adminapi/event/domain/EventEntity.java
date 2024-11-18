@@ -7,6 +7,7 @@ import org.oz.adminapi.maker.domain.MakerEntity;
 import org.oz.adminapi.store.domain.StoreEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,10 +35,10 @@ public class EventEntity extends BasicEntity {
     private String eventName;
 
     @Column(name = "event_start")
-    private LocalDate eventStart;
+    private LocalDateTime eventStart;
 
     @Column(name = "event_end")
-    private LocalDate eventEnd;
+    private LocalDateTime eventEnd;
 
     @Enumerated(EnumType.ORDINAL)
     @Builder.Default
@@ -60,5 +61,15 @@ public class EventEntity extends BasicEntity {
 
     public void initHistory(EventHistoryEntity eventHistory){
         this.eventHistoryEntities.add(eventHistory);
+    }
+
+    public void changeStatusPending(){
+        this.approvalStatus = BasicStatus.PENDING;
+    }
+    public void changeStatusAccepted() {
+        this.approvalStatus = BasicStatus.ACCEPTED;
+    }
+    public void changeStatusRejected() {
+        this.approvalStatus = BasicStatus.REJECTED;
     }
 }

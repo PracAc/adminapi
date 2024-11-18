@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @SpringBootTest
 @Log4j2
@@ -39,8 +39,8 @@ public class EventTests {
                 .eventName("제작자 안상규")
                 .maker(makerRepository.getReferenceById("123-45-67890"))
                 .store(storeRepository.getReferenceById(3L))
-                .eventStart(LocalDate.of(2024,11,12))
-                .eventEnd(LocalDate.of(2024,12,12))
+                .eventStart(LocalDateTime.of(2024,11,12,00,00,00))
+                .eventEnd(LocalDateTime.of(2024,12,12,00,00,00))
                 .eventStatus(EventStatus.PENDING)
                 .spaceRentStatus(true)
                 .build();

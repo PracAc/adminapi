@@ -2,18 +2,25 @@ package org.oz.adminapi.event.service;
 
 import lombok.RequiredArgsConstructor;
 import org.oz.adminapi.common.domain.AttachFile;
+import org.oz.adminapi.common.domain.BasicStatus;
 import org.oz.adminapi.common.dto.PageRequestDTO;
 import org.oz.adminapi.common.dto.PageResponseDTO;
+import org.oz.adminapi.event.domain.EventEntity;
 import org.oz.adminapi.event.dto.EventDTO;
+import org.oz.adminapi.event.dto.EventSearchDTO;
 import org.oz.adminapi.event.repository.EventRepository;
 import org.oz.adminapi.product.domain.ProductEntity;
+import org.oz.adminapi.store.dto.StoreDTO;
+import org.oz.adminapi.store.dto.StoreSearchDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -46,6 +53,36 @@ public class EventService {
         });
 
         return eventDetail;
+    }
+
+    // 신청 list 조회
+    public PageResponseDTO<EventDTO> applicationList(PageRequestDTO pageRequestDTO) {
+        return eventRepository.getApplicationList(pageRequestDTO);
+    }
+
+    // list 검색 기능
+    public PageResponseDTO<EventDTO> searchList(PageRequestDTO pageRequestDTO, EventSearchDTO eventSearchDTO) {
+        return eventRepository.searchEvent(pageRequestDTO, eventSearchDTO);
+    }
+
+    // 이벤트 신청 상태 변경
+    public Long applyEventModifyStatus(EventDTO eventDTO) {
+
+        Optional<EventEntity> optionalApplyEventEntity = eventRepository.findById(eventDTO.getEventNo());
+
+        if (optionalApplyEventEntity.isEmpty()) {
+            throw new RuntimeException("해당 optionalApplyEventEntity 찾을 수 없습니다.");
+        }
+
+        EventEntity updateEntity = optionalApplyEventEntity.get();
+        if (eventDTO.getApprovalStatus() == BasicStatus.ACCEPTED) {
+            updateEntity.changeStatusAccepted();
+        }
+        if (eventDTO.getApprovalStatus() == BasicStatus.REJECTED) {
+            updateEntity.changeStatusRejected();
+        }
+
+        return updateEntity.getEventNo();
     }
 
 }

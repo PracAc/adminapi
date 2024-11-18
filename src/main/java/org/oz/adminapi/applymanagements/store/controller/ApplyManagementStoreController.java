@@ -7,7 +7,6 @@ import org.oz.adminapi.common.dto.PageResponseDTO;
 import org.oz.adminapi.store.dto.StoreDTO;
 import org.oz.adminapi.store.service.StoreService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
